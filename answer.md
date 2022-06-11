@@ -8,3 +8,14 @@
 問題8 スタックポインタの目的は？
 問題9 スタックは空になるか？
 問題10 スタック内の要素を数えられるか？
+
+# ch02
+問題11 排他的論理和を計算する演算で、同じ値同士でこの演算を行うことで全てのbitを0にして初期化している。
+問題12 0 # https://blog.amedama.jp/entry/linux-system-call-assembler#NASM--x86-%E3%81%A7-exit2-%E3%82%92%E5%91%BC%E3%81%B3%E5%87%BA%E3%81%99%E3%81%A0%E3%81%91%E3%81%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0
+問題13
+問題14 ?
+問題15 sar (shift arithmetic right) -> 算術右シフト, shr -> (shift logic right) -> 論理右シフト 符号を考慮するか否か。https://itmanabi.com/shift-operation/
+問題16 0x使う?
+問題17 同じ？ rflagレジスタのZFが1の時jumpする。
+問題18 全て1になっている
+問題19 r13を初期化していないところ？

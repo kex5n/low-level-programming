@@ -5,7 +5,7 @@ codes:
 section .text
 global _start
 _start:
-    mov rax, 0x1122334455667788
+    mov rax, 0xABE4444
 
     mov rdi, 1
     mov rdx, 1
