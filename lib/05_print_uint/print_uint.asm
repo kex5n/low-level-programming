@@ -74,7 +74,9 @@ print_uint:
     idiv rcx
     mov rdi, rdx
     add dil, 0x30
+    push rax
     call print_char ; 2
+    pop rax
 
     ; mov rdi, rax
     ; add dil, 0x30
