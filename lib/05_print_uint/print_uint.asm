@@ -1,8 +1,5 @@
 global _start
 
-section .data
-codes: db 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-
 section .text
 exit:
     mov rax, 60
@@ -14,6 +11,7 @@ exit:
 ; return:
 ;    - rax: length of target text.
 string_length:
+    push rax
     xor rax, rax
 .loop:
     cmp byte[rdi + rax], 0
@@ -21,6 +19,7 @@ string_length:
     inc rax
     jmp .loop
 .end:
+    pop rax
     ret
 
 ; args:
@@ -29,6 +28,8 @@ string_length:
 ;     - none
 print_string:
     call string_length
+    push rdx
+    push rax
     mov rdx, rax
     mov rax, 1
     mov rsi, rdi
@@ -36,6 +37,8 @@ print_string:
     xor rdi, rdi
     syscall
     pop rdi
+    pop rax
+    pop rdx
     ret
 
 ; args:
@@ -58,6 +61,32 @@ print_newline:
     call print_char
     ret
 
-_start:
+; args:
+;     - 8 byte unsign int 
+; return:
+;     - none
+print_uint:
+    xor rax, rax
+    xor rdx, rdx
+    mov rax, 0x20 ; 32
+    mov rcx, 0x0A ; 10
+
+    idiv rcx
+    mov rdi, rdx
+    add dil, 0x30
+    call print_char ; 2
+
+    ; mov rdi, rax
+    ; add dil, 0x30
+    ; call print_char ; 3
+
+    idiv rcx
+    mov rdi, rdx
+    add dil, 0x30
+    call print_char ; 3
     call print_newline
     call exit
+
+_start:
+    ; mov rdi, 0x000000000000020
+    call print_uint
