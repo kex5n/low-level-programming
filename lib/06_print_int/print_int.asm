@@ -13,15 +13,15 @@ exit:
 string_length:
     xor rax, rax
 .loop:
-    cmp byte[rdi + rax], 0
-    jz .end
+    cmp byte [rdi+rax], 0
+    je .end 
     inc rax
-    jmp .loop
+    jmp .loop 
 .end:
     ret
 
 ; args:
-;     - rdi: address of target text
+;     - rdi: target text
 ; return:
 ;     - none
 print_string:
@@ -46,7 +46,7 @@ print_string:
 print_char:
     push rdi
     mov rdi, rsp
-    call print_string
+    call print_string 
     pop rdi
     ret
 
@@ -64,27 +64,45 @@ print_newline:
 ; return:
 ;     - none
 print_uint:
-    mov rax, 0x0000000000000020
-    mov r8, 0x000000000000000A
-    
+    mov rax, rdi
     mov rdi, rsp
     push 0
     sub rsp, 16
-    sub rdi, 8
+    
+    dec rdi
+    mov r8, 10
+
 .loop:
     xor rdx, rdx
-    idiv r8
-    or dl, 0x30
-    dec rdi
+    div r8
+    or  dl, 0x30
+    dec rdi 
     mov [rdi], dl
-    
     test rax, rax
-    jnz .loop
+    jnz .loop 
+   
     call print_string
+    
     add rsp, 24
     ret
 
+; args:
+;     - 8 byte unsign int 
+; return:
+;     - none
+print_int:
+    mov rax, rdi
+    sar rax, 63
+    test rax, rax
+    jz print_uint
+    push rdi
+    mov rdi, 0x2D
+    call print_char
+    pop rdi
+    neg rdi
+    jmp print_uint
+    ret
 _start:
-    ; mov rdi, 0x000000000000020
-    call print_uint
+    mov rdi, 0x0000000000000020
+    call print_int
     call exit
