@@ -112,6 +112,49 @@ read_char:
     pop rax
     ret
 
+; args:
+; - rdi: address of buffer
+; - rdx: size of word
+read_word:
+    xor r8, r8
+.loop:
+    mov rax, 0
+    mov rsi, rdi
+    mov rdi, 0
+    syscall
+    inc r8
+    cmp r8, rdx
+    jz .end
+    jmp .loop
+.end:
+    ret
+
+parse_uint:
+    shr rdi, 8
+    push rdi
+    mov rdi, rsp
+    call string_length
+    xor r8, rax ; internal counter
+    dec r8
+    xor rax, rax ; return value
+    xor r9, r9
+.calc:
+    cmp r8, 0
+    jz .end
+    dec r8
+    inc r9
+    xor rdi, rdi
+    mov dil, [rsp + r8]
+    sub dil, 0x30
+    mov rdx, 0xA
+    mul rdx
+    sub rax, rdi
+    jmp .calc
+.end:
+    mov rdx, r9
+    ret
+
 _start:
-    call read_char
+    mov rdi, 0x2D32313000
+    call parse_uint
     call exit

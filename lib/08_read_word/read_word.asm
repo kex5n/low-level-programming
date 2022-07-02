@@ -112,6 +112,25 @@ read_char:
     pop rax
     ret
 
+; args:
+; - rdi: address of buffer
+; - rdx: size of word
+read_word:
+    xor r8, r8
+.loop:
+    mov rax, 0
+    mov rsi, rdi
+    mov rdi, 0
+    syscall
+    inc r8
+    cmp r8, rdx
+    jz .end
+    jmp .loop
+.end:
+    ret
+
 _start:
-    call read_char
+    mov rdi, rsp
+    mov rdx, 8
+    call read_word
     call exit

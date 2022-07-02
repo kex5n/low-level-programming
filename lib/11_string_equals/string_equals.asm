@@ -1,5 +1,6 @@
 global _start
 
+section .text
 exit:
     mov rax, 60
     xor rdi, rdi
@@ -112,6 +113,82 @@ read_char:
     pop rax
     ret
 
+; args:
+; - rdi: address of buffer
+; - rdx: size of word
+read_word:
+    xor r8, r8
+.loop:
+    mov rax, 0
+    mov rsi, rdi
+    mov rdi, 0
+    syscall
+    inc r8
+    cmp r8, rdx
+    jz .end
+    jmp .loop
+.end:
+    ret
+
+parse_uint:
+    shr rdi, 8
+    push rdi
+    mov rdi, rsp
+    call string_length
+    xor r8, rax ; internal counter
+    dec r8
+    xor rax, rax ; return value
+    xor r9, r9
+.calc:
+    cmp r8, 0
+    jz .end
+    dec r8
+    inc r9
+    xor rdi, rdi
+    mov dil, [rsp + r8]
+    sub dil, 0x30
+    mov rdx, 0xA
+    mul rdx
+    sub rax, rdi
+    jmp .calc
+.end:
+    mov rdx, r9
+    ret
+
+string_equals:
+    mov r8, rdi
+    mov r9, rdx
+    call string_length
+    mov r10, rax
+    mov rdi, r9
+    call string_length
+    cmp rax, r10
+    jnz .false_end
+    xor r10, r10 ; counter
+.loop:
+    xor rdx, rdx
+    xor rdi, rdi
+    mov dil, [r8 + r10]
+    mov dl, [r9 + r10]
+    cmp dil, dl
+    jnz .false_end
+    inc r10
+    cmp rax, r10
+    jnz .loop
+    jmp .true_end
+.false_end:
+    mov rax, 1
+    ret
+.true_end:
+    mov rax, 0
+    ret
+
 _start:
-    call read_char
+    mov rax, 0x414243
+    push rax
+    mov rdi, rsp
+    mov rax, 0x414243
+    push rax
+    mov rdx, rsp
+    call string_equals
     call exit
